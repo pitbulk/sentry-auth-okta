@@ -1,0 +1,64 @@
+{% extends "sentry/bases/auth.html" %}
+{% load sentry_assets %}
+{% load i18n %}
+
+{% block auth_main %}
+  <div class="box">
+    <div class="box-content with-padding">
+      <h3>{% trans "Register Okta IdP data" %}</h3>
+
+      <div class="help-block">{% trans "Introduce the url of the IdP metadata" %}
+      </div>
+
+    {% if error_url or missing_values %}
+        <div class="alert alert-block alert-error">{% trans "There was an error trying to retrieve and parse the metadata." %}
+
+        {% if missing_values %}
+
+            <br><br>{% trans "Not able to retrieve valid values for the following required fields" %}:<br><i>{{ missing_values|join:", " }}</i>
+        {% endif %}
+
+        </div>
+    {% endif %}
+
+    {% with submit_label="Continue" %}
+        {% include "sentry/partial/_form.html" %}
+    {% endwith %}
+
+    </div>
+  </div>
+
+  <div class="box">
+
+    <a id="okta-help">{% trans "Read about how obtain Okta IdP metadata" %}</a>
+
+    <div id="okta-description" style="display:none;">
+    {% blocktrans %}
+        <h4>Obtain Okta IDP Metadata</h4>
+        <p>As an SSO provisioning step, you need to provide the Okta identity provider metadata to Sentry. This metadata is specific to your Okta account.<br>
+        <b>To retrieve the identity provider metadata from Okta:</b></p>
+        <ol>
+            <li>Log into Okta, click <b>Administration</b>.</li>
+            <li>Click the <b>Applications</b> tab.</li>
+            <li>Click the application that you added for Sentry SSO</li>
+            <li>Click the <b>Sign On</b> tab.</li>
+            <li>Copy the Identity Provider metadata link.</li>
+        </ol>
+    {% endblocktrans %}
+        <img src='{% asset_url "sentry_auth_okta" "images/okta_idp_metadata.png" %}'>
+        <br>
+    </div>
+  <div>
+
+<script>
+$("#okta-help").click(function(){
+    $("#okta-description").toggle();
+    if ($("#okta-description").is(':visible')) {
+        $(this).text('Close help');
+    } else {
+        $(this).text('Read about how obtain OneLogin IdP metadata');
+    }
+});
+</script>
+
+{% endblock %}
